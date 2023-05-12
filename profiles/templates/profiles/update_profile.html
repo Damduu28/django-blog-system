@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<main>
+    <div class="form__wrapper">
+        <div class="form__header">
+            <h2>Update Profile Form</h2>
+        </div>
+        <form action="" method="POST" autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="field__group ava">
+                <label for="">Avatar</label>
+                {{ form.avatar }}
+            </div>
+            <div class="field__group">
+                {{ form.name }}
+                <span class="input__title">Full Name</span>
+            </div>
+            <div class="field__group">
+                {{ form.username }}
+                <span class="input__title">Username</span>
+            </div>
+            <div class="field__group">
+                {{ form.email }}
+                <span class="input__title">Email</span>
+            </div>
+            <div class="field__group">
+                {{ form.bio }}
+                <span class="input__title desc">Bio</span>
+                
+            </div>
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

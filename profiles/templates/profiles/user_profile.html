@@ -1,0 +1,165 @@
+{% extends 'index.html' %}
+
+{% load static %}
+{% block content %}
+{% include 'navbar.html' %}
+<section class="user__profile">
+    <div class="container">
+        <div class="user__avatar__wrapper">
+            <div class="user__avatar__img">
+                <div class="avatar">
+                    <img src="{{ user.get_avatar_url }}" alt="">
+                    <i class="fas fa-camera" id="camera"></i>
+                </div>
+                <div class="profile__user">
+                    <span class="profile__name">{{ user.name }}</span>
+                    <span class="profile__username">@{{ user.username }}</span>
+                    {% if request.user == user %}
+                        <a href="{% url 'update-profile' user.id %}">edit profile</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="profile__about">
+                <h2>About me</h2>
+                {% if user.bio != '' %}
+                    <p class="about__description">{{ user.bio }}</p>
+                    {% else %}
+                    <p class="about__description">You currently have no bio.</p>
+                {% endif %}
+            </div>
+            {% if request.user == user %}
+                <div class="profile__tabs">
+                    <a href="{% url 'create-post' %}">create post</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<section class="profile__recent recent__posts">
+    <div class="container">
+        <div class="topics__wrapper profile__topics">
+            <h3>Browse Topics</h3>
+            <ul class="topics__items">
+                <li>
+                    <a href="#">All</a>
+                    <span class="post__count">{{ posts.count }}</span>
+                </li>
+                {% for topic in topics %}
+                    <li>
+                        <a href="#">{{ topic.name }}</a>
+                        <span class="post__count">{{ topic.post_set.count }}</span>
+                    </li>
+                {% endfor %}
+                
+            </ul>
+        </div>
+        <div class="posts__wrapper profile_posts">
+            <div class="available">
+                <h4 class="recent profile__recent">posts hosted by {{ user.get_user_name }}</h4>
+                <span class="available__post">{{ posts.count }} post available</span>
+            </div>
+            <div class="users__posts">
+                {% if request.user == user %}
+                    {% for post in posts %}
+                        <div class="post">
+                            <div class="recent__post__user">
+                                <div class="avatar__name">
+                                    <div class="login__user">
+                                        <i class="fas fa-camera camera"></i>
+                                        <img class="user__avatar" src="{{ post.host.get_avatar_url }}" alt="">
+                                    </div>
+                                    <a href="{% url 'user-profile' user.id %}" class="post__user__name">@{{ post.host.username }}</a>
+                                </div>
+                                <span class="time__posted">{{ post.created|timesince }} ago</span>
+                                {% if post.host == request.user %}
+                                    <div class="comment__dropdown" data-dropdown>
+                                        <div class="comment__btns u_post" data-dropdown-btn>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                        </div>
+                                        <div class="comment__dropdown__content">
+                                            <a href="{% url 'update-post' post.id %}">Edit</a>
+                                            <a href="{% url 'delete-post' post.id %}">Delete</a>
+                                            <a class="publish" href="{% url 'publish-post' user.id post.id %}" data-status="{{ post.publish }}">publishe</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'post' post.slug %}" class="post__name">{{ post.title }}</a>
+                            <div class="post__description">
+                                <p class="description">{{ post.description }}</p>
+                            </div>
+                            <div class="comments">
+                                <p class="joined__users">
+                                    <i class="fas fa-users"></i>
+                                    {{ post.participants.count }} Joined
+                                </p>
+                                <p class="topic__title">{{ post.topic.name }}</p>
+                            </div>
+                        </div> 
+                    {% endfor %}
+                {% else %}
+                    {% for post in publish_posts %}
+                        <div class="post">
+                            <div class="recent__post__user">
+                                <div class="avatar__name">
+                                    <div class="login__user">
+                                        <i class="fas fa-camera camera"></i>
+                                        <img class="user__avatar" src="{{ post.host.get_avatar_url }}" alt="">
+                                    </div>
+                                    <a href="#" class="post__user__name">@{{ post.host.username }}</a>
+                                </div>
+                                <span class="time__posted">{{ post.created|timesince }} ago</span>
+                                {% if post.host == request.user %}
+                                    <div class="comment__dropdown" data-dropdown>
+                                        <div class="comment__btns u_post" data-dropdown-btn>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                        </div>
+                                        <div class="comment__dropdown__content">
+                                            <a href="#">Edit</a>
+                                            <a href="#">Delete</a>
+                                            <a href="#">publishe</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <a href="#" class="post__name">{{ post.title }}</a>
+                            <div class="post__description">
+                                <p class="description">{{ post.description }}</p>
+                            </div>
+                            <div class="comments">
+                                <p class="joined__users">
+                                    <i class="fas fa-users"></i>
+                                    {{ post.participants.count }} Joined
+                                </p>
+                                <p class="topic__title">{{ post.topic }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="topics__wrapper">
+            <h3>Participants
+                <span class="partici">(5 Joined)</span>
+            </h3>
+            <ul class="participants">
+                <li>
+                    <div class="login__user">
+                        <i class="fas fa-camera camera"></i>
+                        <img class="user__avatar" src="{% static 'images/user.png' %}" alt="">
+                    </div>
+                    <div class="participant">
+                        <span class="participant__name">damduu sule</span>
+                        <a href="#" class="post__user__name">@damduu</a>
+                    </div>
+                </li>
+        
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

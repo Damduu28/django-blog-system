@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<section class="home__posts recent__posts">
+    <div class="container">
+        <div class="topics__wrapper">
+            <h3>Browse Topics</h3>
+            <ul class="topics__items">
+                <li>
+                    <a href="#">All</a>
+                    <span class="post__count">{{ posts.count }}</span>
+                </li>
+                {% for topic in topics %}
+                    <li>
+                        <a href="#">{{ topic.name }}</a>
+                        <span class="post__count">{{ topic.post_set.count }}</span>
+                    </li>
+                {% endfor %}
+                
+            </ul>
+        </div>
+        <div class="posts__wrapper">
+            <div class="available">
+                <h4 class="recent">recent posts</h4>
+                <span class="available__post">{{ posts.count }} post available</span>
+            </div>
+            <div class="users__posts">
+                {% for post in posts %}
+                    <div class="post">
+                        <div class="recent__post__user">
+                            <div class="avatar__name">
+                                <div class="login__user">
+                                    <i class="fas fa-camera camera"></i>
+                                    <img class="user__avatar" src="{{ post.host.get_avatar_url }}" alt="" >
+                                </div>
+                                <a href="{% url 'user-profile' post.host.id %}" class="post__user__name">@{{ post.host.get_user_name }}</a>
+                            </div>
+                            <span class="time__posted">{{ post.created|timesince }} ago</span>
+                        </div>
+                        <a href="{% url 'post' post.slug %}" class="post__name">{{ post.title }}</a>
+                        <div class="post__description">
+                            <!-- <div class="post__image">
+                                <img src="images/postImages/gallery-img-1.jpg" alt="">
+                            </div> -->
+                            <p class="description">{{ post.description }}</p>
+                        </div>
+                        <div class="comments">
+                            <p class="joined__users">
+                                <i class="fas fa-users"></i>
+                                {{ post.comment_set.count }} Joined
+                            </p>
+                        
+                            <p class="topic__title">{{ post.topic.name }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+                
+            </div>
+        </div>
+        <!-- <div class="recent__activities"></div> -->
+    </div>
+</section>
+{% endblock %}

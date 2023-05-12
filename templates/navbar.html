@@ -1,0 +1,57 @@
+{% load static %}
+<header>
+    <div class="container flex">
+        <h1 class="logo"><a href="{% url 'home' %}">DamduuBlog</a></h1>
+        <nav class="navbar">
+            <ul class="nav__items">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+                {% if not request.user.is_authenticated %}
+                    <li>
+                        <a href="{% url 'login' %}">
+                            <i class="fas fa-sign-in"></i>
+                            Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% if request.user.is_authenticated %}
+            <div class="dropdown" data-dropdown>
+                <div class="user">
+                    <div class="login__user">
+                        <i class="fas fa-camera camera"></i>
+                        <img class="user__avatar" src="{{ request.user.get_avatar_url }}" alt="" data-dropdown-btn>
+                    </div>
+                    <p class="user__name">
+                        <span class="name">{{ request.user.name }}</span>
+                        <span class="username">@{{ request.user.username }}</span>
+                    </p>
+                    <i class="fas fa-chevron-down" id="chevron"></i>
+                </div>
+                <div class="dropdown__content">
+                    <a href="{% url 'user-profile' request.user.id %}">profile</a>
+                    <a href="{% url 'logout' %}">logout</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% if page != "post" %}
+        <div class="container flex last">
+            <div class="search__bar search__mobile">
+                <form action="">
+                    <div class="field__group">
+                        <input type="search" name="q" id="" placeholder="Search a topic...">
+                    </div>
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="toggle__icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    {% endif %}
+</header>

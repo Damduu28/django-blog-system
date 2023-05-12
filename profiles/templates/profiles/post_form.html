@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<main>
+    <div class="form__wrapper">
+        <div class="form__header">
+            <h2>{{ form_title }}</h2>
+        </div>
+        <form action="" method="POST" autocomplete="off">
+            {% csrf_token %}
+            <div class="field__group">
+                {{ form.title }}
+                <span class="input__title">Post Title</span>
+            </div>
+            <div class="field__group">
+                <input type="text" name="topic" value="{{ post.topic.name }}" list="topic-list">
+                <span class="input__title">Post Topic</span>
+                <datalist id="topic-list">
+                    <select name="" id="">
+                        {% for topic in topics %}
+                            <option value="{{ topic.name }}">{{ topic.name }}</option>
+                        {% endfor %}
+                    </select>
+                </datalist>
+            </div>
+            <div class="field__group">
+                {{ form.description }}
+                <span class="input__title desc">Post Description</span>
+                
+            </div>
+            <div class="field__group forget">
+                <label for="">
+                    {{ form.publish }}Publish
+                </label>
+            </div>
+            <button type="submit">{{ btn_type }} Post</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

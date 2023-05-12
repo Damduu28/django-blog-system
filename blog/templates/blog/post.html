@@ -1,0 +1,104 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<section class="one__post recent__posts">
+    <div class="container">
+        <div class="single__post">
+            <div class="single__post__wrapper">
+                <div class="single__post__title">
+                    <h2>{{ post.title }}</h2>
+                    <span class="time__posted">{{ post.created|timesince }}</span>
+                </div>
+                <div class="single__post__description">
+                    <p class="single__description">{{ post.description }}</p>
+                </div>
+                <div class="post__single">
+                    <span class="hosted__by">hosted by</span>
+                    <div class="single__user">
+                        <div class="login__user">
+                            <i class="fas fa-camera camera"></i>
+                            <img class="user__avatar" src="{{ post.host.get_avatar_url }}" alt="">
+                        </div>
+                        <a href="{% url 'user-profile' post.host.id %}" class="post__user__name">@{{ post.host.username }}</a>
+                    </div>
+                    <p class="topic__title">{{ post.topic }}</p>
+                </div>
+            </div>
+            <div class="post__comment__wrapper">
+                <div class="comments__container">
+                    {% for comment in comments %}
+                        <div class="single__comment">
+                            <div class="comment__user">
+                                <div class="login__user">
+                                    <i class="fas fa-camera camera"></i>
+                                    <img class="user__avatar" src="{{ comment.user.get_avatar_url }}" alt="">
+                                </div>
+                                <p class="user__time__posted">
+                                    <a href="{% url 'user-profile' comment.user.id %}" class="post__user__name">@{{ comment.user.username }}</a>
+                                    <span class="time__posted">{{ comment.created|timesince }} ago</span>
+                                </p>
+                                {% if comment.user == request.user %}
+                                    <div class="comment__dropdown" data-dropdown>
+                                        <div class="comment__btns" data-dropdown-btn>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                            <i class="fas fa-circle" data-dropdown-btn></i>
+                                        </div>
+                                        <div class="comment__dropdown__content">
+                                            <a href="#">Edit</a>
+                                            <a href="{% url 'delete-comment' post.slug comment.id %}">Delete</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <p class="comment">{{ comment.body }}</p>
+                        </div> 
+                    {% endfor %}
+                </div>
+                {% if request.user.is_authenticated %}
+                    <div class="comment__form">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <div class="field__group">
+                                <input type="text" name="body" placeholder="Type your message here.">
+                            </div>
+                            <button type="submit">
+                                <img src="{% static 'images/telegram-icon.png' %}" alt="">
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="topics__wrapper">
+            <h3>Participants
+                <span class="partici">(5 Joined)</span>
+            </h3>
+            <ul class="participants">
+                {% if participants %}
+                    {% for participant in participants %}
+                        <li>
+                            <div class="login__user">
+                                <i class="fas fa-camera camera"></i>
+                                <img class="user__avatar" src="{{ participant.get_avatar_url }}" alt="">
+                            </div>
+                            <div class="participant">
+                                <span class="participant__name">{{ participant.name }}</span>
+                                <a href="{% url 'user-profile' participant.id %}" class="post__user__name">@{{ participant.username }}</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li><p>No Participant in this Post</p></li>
+                {% endif %}
+                
+                
+            </ul>
+        </div>
+        <div class="recent__activities"></div>
+    </div>
+</section>
+{% endblock %}
